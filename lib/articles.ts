@@ -7,17 +7,30 @@ import html from 'remark-html';
 const articlesDirectory = path.join(process.cwd(), 'content/articles');
 
 export function getSortedArticlesData() {
-  const fileNames = fs.readdirSync(articlesDirectory);
-  const allArticlesData = fileNames.map((fileName) => {
-    const slug = fileName.replace(/\.md$/, '');
-    const fullPath = path.join(articlesDirectory, fileName);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const matterResult = matter(fileContents);
+  const allArticlesData: any[] = [];
+  
+  // Read all category directories
+  const categories = fs.readdirSync(articlesDirectory, { withFileTypes: true });
+  
+  categories.forEach((category) => {
+    if (category.isDirectory()) {
+      const categoryPath = path.join(articlesDirectory, category.name);
+      const files = fs.readdirSync(categoryPath);
+      
+      files.forEach((fileName) => {
+        if (fileName.endsWith('.md')) {
+          const slug = fileName.replace(/\.md$/, '');
+          const fullPath = path.join(categoryPath, fileName);
+          const fileContents = fs.readFileSync(fullPath, 'utf8');
+          const matterResult = matter(fileContents);
 
-    return {
-      slug,
-      ...(matterResult.data as { [key: string]: any }),
-    };
+          allArticlesData.push({
+            slug,
+            ...(matterResult.data as { [key: string]: any }),
+          });
+        }
+      });
+    }
   });
 
   return allArticlesData.sort((a, b) => {
@@ -30,22 +43,23 @@ export function getSortedArticlesData() {
 }
 
 export async function getArticleData(slug: string) {
-    // Correctly locate the file within its category subdirectory
-    const directories = fs.readdirSync(articlesDirectory, { withFileTypes: true });
-    let fullPath = '';
-    for (const dir of directories) {
-        if (dir.isDirectory()) {
-            const filePath = path.join(articlesDirectory, dir.name, `${slug}.md`);
-            if (fs.existsSync(filePath)) {
-                fullPath = filePath;
-                break;
-            }
-        }
+  // Correctly locate the file within its category subdirectory
+  const directories = fs.readdirSync(articlesDirectory, { withFileTypes: true });
+  let fullPath = '';
+  
+  for (const dir of directories) {
+    if (dir.isDirectory()) {
+      const filePath = path.join(articlesDirectory, dir.name, `${slug}.md`);
+      if (fs.existsSync(filePath)) {
+        fullPath = filePath;
+        break;
+      }
     }
+  }
 
-    if (!fullPath) {
-        throw new Error(`Article with slug ${slug} not found`);
-    }
+  if (!fullPath) {
+    throw new Error(`Article with slug ${slug} not found`);
+  }
 
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const matterResult = matter(fileContents);
@@ -63,6 +77,6 @@ export async function getArticleData(slug: string) {
 }
 
 export function getFeaturedArticles() {
-    const allArticles = getSortedArticlesData();
-    return allArticles.filter(article => article.featured);
+  const allArticles = getSortedArticlesData();
+  return allArticles.filter(article => article.featured);
 }
