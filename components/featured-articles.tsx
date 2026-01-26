@@ -27,7 +27,7 @@ export default async function FeaturedArticles() {
             <p className="mt-2 text-gray-400">{article.description}</p>
             <div className="mt-4 flex items-center gap-4 text-xs text-gray-500">
               <span>By {article.author}</span>
-              <span>{article.date}</span>
+              <span>{String(article.date)}</span>
               <span>{article.readTime} min read</span>
             </div>
           </div>

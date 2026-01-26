@@ -24,7 +24,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           <h1 className="mt-2 text-4xl md:text-5xl font-bold tracking-tight">{article.title}</h1>
           <div className="mt-4 flex items-center gap-4 text-sm text-gray-400">
             <span>By {article.author}</span>
-            <span>{article.date}</span>
+            <span>{String(article.date)}</span>
             <span>{article.readTime} min read</span>
           </div>
         </header>

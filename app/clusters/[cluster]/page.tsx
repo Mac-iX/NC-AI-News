@@ -41,7 +41,7 @@ export default function ClusterPage({ params }: { params: { cluster: keyof typeo
                 <h3 className="text-xl font-bold leading-tight hover:text-carolina-blue transition-colors">{article.title}</h3>
                 <p className="mt-2 text-sm text-gray-400 line-clamp-3">{article.description}</p>
                 <div className="mt-4 flex items-center gap-4 text-xs text-gray-500">
-                  <span>{article.date}</span>
+                  <span>{String(article.date)}</span>
                   <span>{article.readTime} min read</span>
                 </div>
               </div>
