@@ -59,3 +59,95 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+/* Article Prose Styling - CRITICAL FIX FOR PARAGRAPH SPACING */
+@layer components {
+  .prose {
+    @apply text-gray-300 leading-relaxed;
+  }
+  
+  .prose p {
+    @apply mb-6 text-lg leading-[1.8];
+  }
+  
+  .prose h1 {
+    @apply text-4xl font-bold mb-6 mt-12 text-white;
+  }
+  
+  .prose h2 {
+    @apply text-3xl font-bold mb-5 mt-10 text-white;
+  }
+  
+  .prose h3 {
+    @apply text-2xl font-semibold mb-4 mt-8 text-carolina-blue;
+  }
+  
+  .prose h4 {
+    @apply text-xl font-semibold mb-3 mt-6 text-gray-200;
+  }
+  
+  .prose strong {
+    @apply text-white font-semibold;
+  }
+  
+  .prose em {
+    @apply text-gray-300 italic;
+  }
+  
+  .prose a {
+    @apply text-carolina-blue hover:text-white transition-colors underline decoration-carolina-blue/30 hover:decoration-carolina-blue;
+  }
+  
+  .prose ul,
+  .prose ol {
+    @apply mb-6 pl-8 space-y-2;
+  }
+  
+  .prose li {
+    @apply text-lg leading-[1.8];
+  }
+  
+  .prose blockquote {
+    @apply border-l-4 border-carolina-blue pl-6 my-6 italic text-gray-400;
+  }
+  
+  .prose code {
+    @apply bg-slate-800 text-carolina-blue px-2 py-1 rounded text-sm font-mono;
+  }
+  
+  .prose pre {
+    @apply bg-slate-900 p-6 rounded-lg overflow-x-auto mb-6 border border-slate-700;
+  }
+  
+  .prose pre code {
+    @apply bg-transparent p-0;
+  }
+  
+  .prose table {
+    @apply w-full mb-8 mt-6 border-collapse;
+  }
+  
+  .prose thead {
+    @apply border-b-2 border-carolina-blue;
+  }
+  
+  .prose th {
+    @apply text-left py-3 px-4 font-semibold text-carolina-blue;
+  }
+  
+  .prose td {
+    @apply py-3 px-4 border-b border-slate-700;
+  }
+  
+  .prose tr:hover {
+    @apply bg-slate-800/30;
+  }
+  
+  .prose img {
+    @apply rounded-lg my-8 w-full;
+  }
+  
+  .prose hr {
+    @apply my-12 border-slate-700;
+  }
+}

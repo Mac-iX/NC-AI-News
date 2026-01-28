@@ -1,11 +1,21 @@
 import { getArticleData, getSortedArticlesData } from "@/lib/articles";
 import { notFound } from "next/navigation";
+import { format } from "date-fns";
 
 export async function generateStaticParams() {
   const articles = getSortedArticlesData();
   return articles.map((article) => ({
     slug: article.slug,
   }));
+}
+
+function formatDate(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    return format(date, "MMMM d, yyyy");
+  } catch {
+    return dateString;
+  }
 }
 
 export default async function ArticlePage({ params }: { params: { slug: string } }) {
@@ -18,18 +28,20 @@ export default async function ArticlePage({ params }: { params: { slug: string }
 
   return (
     <article className="container mx-auto px-4 py-12 md:py-16">
-      <div className="max-w-3xl mx-auto">
-        <header className="mb-8">
-          <p className="text-sm text-carolina-blue font-semibold uppercase">{article.category.replace(/-/g, ' ')}</p>
-          <h1 className="mt-2 text-4xl md:text-5xl font-bold tracking-tight">{article.title}</h1>
-          <div className="mt-4 flex items-center gap-4 text-sm text-gray-400">
-            <span>By {article.author}</span>
-            <span>{String(article.date)}</span>
+      <div className="max-w-4xl mx-auto">
+        <header className="mb-12">
+          <p className="text-sm text-carolina-blue font-bold uppercase tracking-wider">{article.category.replace(/-/g, ' ')}</p>
+          <h1 className="mt-4 text-4xl md:text-6xl font-bold tracking-tight leading-tight">{article.title}</h1>
+          <div className="mt-6 flex items-center gap-6 text-base text-gray-400">
+            <span className="font-medium">By {article.author}</span>
+            <span>•</span>
+            <span>{formatDate(article.date)}</span>
+            <span>•</span>
             <span>{article.readTime} min read</span>
           </div>
         </header>
         <div
-          className="prose prose-invert prose-lg max-w-none"
+          className="prose max-w-none"
           dangerouslySetInnerHTML={{ __html: article.contentHtml }}
         />
       </div>

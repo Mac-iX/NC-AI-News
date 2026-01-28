@@ -1,5 +1,6 @@
 import { getSortedArticlesData } from "@/lib/articles";
 import Link from "next/link";
+import { format } from "date-fns";
 
 const CLUSTER_DATA = {
   "ai-innovation": { title: "AI Innovation & Startups", description: "The latest on NC-based AI companies, product launches, and success stories." },
@@ -16,32 +17,45 @@ export async function generateStaticParams() {
   }));
 }
 
+function formatDate(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    return format(date, "MMMM d, yyyy");
+  } catch {
+    return dateString;
+  }
+}
+
 export default function ClusterPage({ params }: { params: { cluster: keyof typeof CLUSTER_DATA } }) {
   const clusterInfo = CLUSTER_DATA[params.cluster];
   const allArticles = getSortedArticlesData();
   const clusterArticles = allArticles.filter(article => article.category === params.cluster);
 
   return (
-    <div className="container mx-auto px-4 py-12 md:py-16">
-      <header className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-carolina-blue">{clusterInfo.title}</h1>
-        <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-400">{clusterInfo.description}</p>
+    <div className="container mx-auto px-4 py-12 md:py-20">
+      <header className="text-center mb-16">
+        <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-carolina-blue">{clusterInfo.title}</h1>
+        <p className="mt-6 max-w-3xl mx-auto text-xl text-gray-400 leading-relaxed">{clusterInfo.description}</p>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {clusterArticles.map((article) => (
-          <article key={article.slug} className="bg-slate-900 rounded-lg overflow-hidden border border-slate-700 hover:border-carolina-blue transition-all">
+          <article key={article.slug} className="bg-slate-900/50 rounded-xl overflow-hidden border border-slate-800 hover:border-carolina-blue/50 transition-all duration-300 group">
             <Link href={`/articles/${article.slug}`} prefetch={false}>
-              <img
-                src={article.coverImage || "/images/placeholder.jpg"}
-                alt={article.title}
-                className="object-cover aspect-video"
-              />
+              <div className="relative overflow-hidden">
+                <img
+                  src={article.coverImage || "/images/placeholder.jpg"}
+                  alt={article.title}
+                  className="w-full object-cover aspect-video transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+              </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold leading-tight hover:text-carolina-blue transition-colors">{article.title}</h3>
-                <p className="mt-2 text-sm text-gray-400 line-clamp-3">{article.description}</p>
-                <div className="mt-4 flex items-center gap-4 text-xs text-gray-500">
-                  <span>{String(article.date)}</span>
+                <h3 className="text-xl font-bold leading-tight group-hover:text-carolina-blue transition-colors duration-200">{article.title}</h3>
+                <p className="mt-3 text-sm text-gray-400 leading-relaxed line-clamp-3">{article.description}</p>
+                <div className="mt-5 flex items-center gap-3 text-xs text-gray-500">
+                  <span>{formatDate(article.date)}</span>
+                  <span>•</span>
                   <span>{article.readTime} min read</span>
                 </div>
               </div>
