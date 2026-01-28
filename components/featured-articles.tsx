@@ -1,15 +1,5 @@
 import Link from "next/link";
 import { getFeaturedArticles } from "@/lib/articles";
-import { format } from "date-fns";
-
-function formatDate(dateString: string): string {
-  try {
-    const date = new Date(dateString);
-    return format(date, "MMMM d, yyyy");
-  } catch {
-    return dateString;
-  }
-}
 
 export default async function FeaturedArticles() {
   const articles = await getFeaturedArticles();
@@ -41,7 +31,7 @@ export default async function FeaturedArticles() {
             <div className="mt-6 flex items-center gap-4 text-sm text-gray-500">
               <span className="font-medium">By {article.author}</span>
               <span>•</span>
-              <span>{formatDate(article.date)}</span>
+              <span>{article.date}</span>
               <span>•</span>
               <span>{article.readTime} min read</span>
             </div>

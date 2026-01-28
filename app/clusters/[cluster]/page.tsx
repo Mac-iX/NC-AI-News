@@ -1,6 +1,5 @@
 import { getSortedArticlesData } from "@/lib/articles";
 import Link from "next/link";
-import { format } from "date-fns";
 
 const CLUSTER_DATA = {
   "ai-innovation": { title: "AI Innovation & Startups", description: "The latest on NC-based AI companies, product launches, and success stories." },
@@ -15,15 +14,6 @@ export async function generateStaticParams() {
   return Object.keys(CLUSTER_DATA).map((cluster) => ({
     cluster,
   }));
-}
-
-function formatDate(dateString: string): string {
-  try {
-    const date = new Date(dateString);
-    return format(date, "MMMM d, yyyy");
-  } catch {
-    return dateString;
-  }
 }
 
 export default function ClusterPage({ params }: { params: { cluster: keyof typeof CLUSTER_DATA } }) {
@@ -54,7 +44,7 @@ export default function ClusterPage({ params }: { params: { cluster: keyof typeo
                 <h3 className="text-xl font-bold leading-tight group-hover:text-carolina-blue transition-colors duration-200">{article.title}</h3>
                 <p className="mt-3 text-sm text-gray-400 leading-relaxed line-clamp-3">{article.description}</p>
                 <div className="mt-5 flex items-center gap-3 text-xs text-gray-500">
-                  <span>{formatDate(article.date)}</span>
+                  <span>{article.date}</span>
                   <span>•</span>
                   <span>{article.readTime} min read</span>
                 </div>

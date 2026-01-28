@@ -3,8 +3,22 @@ import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
+import { format } from 'date-fns';
 
 const articlesDirectory = path.join(process.cwd(), 'content/articles');
+
+function formatArticleDate(date: any): string {
+  try {
+    if (typeof date === 'string') {
+      return format(new Date(date), 'MMMM d, yyyy');
+    } else if (date instanceof Date) {
+      return format(date, 'MMMM d, yyyy');
+    }
+    return String(date);
+  } catch {
+    return String(date);
+  }
+}
 
 export function getSortedArticlesData() {
   const allArticlesData: any[] = [];
@@ -26,7 +40,9 @@ export function getSortedArticlesData() {
 
           allArticlesData.push({
             slug,
-            ...(matterResult.data as { [key: string]: any }),
+            ...matterResult.data,
+            date: formatArticleDate(matterResult.data.date),
+            dateRaw: matterResult.data.date, // Keep raw date for sorting
           });
         }
       });
@@ -34,11 +50,9 @@ export function getSortedArticlesData() {
   });
 
   return allArticlesData.sort((a, b) => {
-    if (a.date < b.date) {
-      return 1;
-    } else {
-      return -1;
-    }
+    const dateA = new Date(a.dateRaw);
+    const dateB = new Date(b.dateRaw);
+    return dateB.getTime() - dateA.getTime();
   });
 }
 
@@ -72,7 +86,8 @@ export async function getArticleData(slug: string) {
   return {
     slug,
     contentHtml,
-    ...(matterResult.data as { [key: string]: any }),
+    ...matterResult.data,
+    date: formatArticleDate(matterResult.data.date),
   };
 }
 
